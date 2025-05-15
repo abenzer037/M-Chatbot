@@ -1,7 +1,8 @@
+
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import type { Message } from '@/types';
+import type { Message, ApiChatbotResponse } from '@/types';
 import { ChatHeader } from '@/components/chat/ChatHeader';
 import { ChatArea } from '@/components/chat/ChatArea';
 import { ChatInput } from '@/components/chat/ChatInput';
@@ -36,26 +37,55 @@ export default function ChatPage() {
     setIsLoading(true);
 
     try {
-      const aiOutput = await getAIResponse(messageText);
-      if (aiOutput.suggestions && aiOutput.suggestions.length > 0) {
-        const suggestionsText = (
-          <div>
-            <p className="font-semibold mb-2">Here are some suggestions based on previous RCA reports:</p>
-            <ul className="list-disc list-inside space-y-1">
-              {aiOutput.suggestions.map((suggestion, index) => (
-                <li key={index}>{suggestion}</li>
-              ))}
-            </ul>
-          </div>
-        );
-        addMessage(suggestionsText, 'bot');
-      } else {
-        addMessage("I couldn't find any specific suggestions for that, but please provide more details if you'd like me to try again.", 'bot');
-      }
+      const apiResponse: ApiChatbotResponse = await getAIResponse(messageText);
+      
+      const botMessageContent = (
+        <div className="space-y-2">
+          <p>{apiResponse.full_response}</p>
+          {apiResponse.summary && (
+            <div>
+              <p className="font-semibold">Summary:</p>
+              <p>{apiResponse.summary}</p>
+            </div>
+          )}
+          {apiResponse.recommendation && (
+             <div>
+              <p className="font-semibold">Recommendation:</p>
+              <p>{apiResponse.recommendation}</p>
+            </div>
+          )}
+          {apiResponse.source_incidents && apiResponse.source_incidents.length > 0 && (
+            <div>
+              <p className="font-semibold mt-2">Source Incidents:</p>
+              <ul className="list-disc list-inside space-y-1 text-xs">
+                {apiResponse.source_incidents.map((incident, index) => (
+                  <li key={index}>
+                    <p className="font-medium">Content: <span className="font-normal">{incident.Content}</span></p>
+                    {incident.Metadata && Object.keys(incident.Metadata).length > 0 && (
+                       <details className="mt-1">
+                         <summary className="cursor-pointer text-muted-foreground hover:text-foreground">Metadata</summary>
+                         <pre className="bg-muted/50 p-2 rounded-md text-muted-foreground text-[0.7rem] whitespace-pre-wrap break-all">
+                           {JSON.stringify(incident.Metadata, null, 2)}
+                         </pre>
+                       </details>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      );
+      addMessage(botMessageContent, 'bot');
+
     } catch (error) {
       console.error('Error processing message:', error);
+      let errorMessage = "Sorry, I encountered an error while processing your request. Please try again later.";
+      if (error instanceof Error) {
+        errorMessage = error.message; // Show more specific error from action
+      }
       addMessage(
-        "Sorry, I encountered an error while processing your request. Please try again later.",
+        errorMessage,
         'error'
       );
     } finally {
@@ -64,8 +94,6 @@ export default function ChatPage() {
   };
 
   const handleNewRcaSubmission = () => {
-    // Placeholder for New RCA Submission functionality
-    // For now, it can clear the chat and show a message
     setMessages([]);
      addMessage(
       "Welcome to the M-pesa Incident Analysis assistant! I can help you analyze IT incidents. How can I assist you today?",
