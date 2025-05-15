@@ -41,7 +41,7 @@ export function ChatInput({ onSendMessage, isLoading }: ChatInputProps) {
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Type your message here..."
+          placeholder="Ask about an incident.."
           className="flex-grow resize-none_ focus:ring-1 focus:ring-primary/50"
           rows={1}
           disabled={isLoading}
