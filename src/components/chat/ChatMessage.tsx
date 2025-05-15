@@ -31,7 +31,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
         <div className={cn(
           "flex-shrink-0 p-2 rounded-full",
           isBot ? "bg-primary text-primary-foreground" : 
-          isSystem ? "bg-accent text-accent-foreground" :
+          isSystem ? "bg-primary text-primary-foreground" : // Changed from bg-accent to bg-primary
           isError ? "bg-destructive text-destructive-foreground" :
           "bg-secondary text-secondary-foreground"
         )}>
