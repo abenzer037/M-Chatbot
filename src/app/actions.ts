@@ -5,16 +5,10 @@ import type { ApiChatRequest, ApiChatbotResponse, RcaFormData, RcaSubmissionResp
 
 export async function getAIResponse(userInput: string): Promise<ApiChatbotResponse> {
   const apiUrl = process.env.NEXT_PUBLIC_CHATBOT_API_URL;
-  const openaiKey = process.env.NEXT_PUBLIC_CHATBOT_OPENAI_KEY;
 
   if (!apiUrl) {
     console.error('Error: NEXT_PUBLIC_CHATBOT_API_URL is not set.');
     throw new Error('Chatbot API URL is not configured. Please contact support.');
-  }
-  if (!openaiKey) {
-    console.error('Error: NEXT_PUBLIC_CHATBOT_OPENAI_KEY is not set.');
-    // Depending on security policy, you might want a more generic error for the client.
-    throw new Error('Chatbot API key is not configured. Please contact support.');
   }
 
   const fullApiUrl = `${apiUrl.replace(/\/$/, '')}/chat/`; // Ensure no double slashes
@@ -28,7 +22,6 @@ export async function getAIResponse(userInput: string): Promise<ApiChatbotRespon
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-OpenAI-Key': openaiKey, // Send OpenAI key as a custom header
       },
       body: JSON.stringify(requestBody),
     });
