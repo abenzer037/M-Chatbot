@@ -12,8 +12,8 @@ export function ChatHeader({ onNewRcaSubmission, onAnalyticsClick }: ChatHeaderP
       <div className="container mx-auto flex items-center justify-between">
         <h1 className="text-xl font-semibold text-primary">M-pesa Incident Analyzer</h1>
         <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={onAnalyticsClick}>
-            <BarChart3 className="mr-2 h-5 w-5" />
+          <Button variant="default" onClick={onAnalyticsClick}>
+            <BarChart3 className="mr-2 h-5 w-5 text-primary-foreground" />
             Analytics
           </Button>
           <Button variant="default" onClick={onNewRcaSubmission}>
