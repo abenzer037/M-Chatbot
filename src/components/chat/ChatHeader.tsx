@@ -12,7 +12,7 @@ export function ChatHeader({ onNewRcaSubmission }: ChatHeaderProps) {
         <h1 className="text-xl font-semibold text-primary">M-pesa Incident Analyzer</h1>
         <Button variant="outline" onClick={onNewRcaSubmission} className="text-accent-foreground border-accent hover:bg-accent/10">
           <PlusCircle className="mr-2 h-5 w-5 text-accent" />
-          New RCA Submission
+          New RCA
         </Button>
       </div>
     </header>
