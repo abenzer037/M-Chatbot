@@ -23,7 +23,7 @@ export interface ApiChatbotResponse {
   source_incidents: ApiSourceIncident[];
 }
 
-// New type for RCA Form Data
+// Type for RCA Form Data
 export interface RcaFormData {
   incidentTicketNumber: string;
   timeDetected: string; // Should be ISO string for datetime-local
@@ -40,4 +40,11 @@ export interface RcaFormData {
   rootCauseFindings: string;
   correctiveActions: string;
   preventativeMeasures: string;
+}
+
+// Type for RCA Submission API Response (from server action)
+export interface RcaSubmissionResponse {
+  success: boolean;
+  message: string;
+  ticketNumber?: string;
 }

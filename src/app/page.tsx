@@ -6,7 +6,7 @@ import type { Message, ApiChatbotResponse, RcaFormData } from '@/types';
 import { ChatHeader } from '@/components/chat/ChatHeader';
 import { ChatArea } from '@/components/chat/ChatArea';
 import { ChatInput } from '@/components/chat/ChatInput';
-import { getAIResponse } from './actions';
+import { getAIResponse, submitRcaData } from './actions';
 import {
   Dialog,
   DialogContent,
@@ -16,11 +16,13 @@ import {
 } from '@/components/ui/dialog';
 import { RcaForm } from '@/components/rca/RcaForm';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { useToast } from '@/hooks/use-toast';
 
 export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // Used for chat input and RCA form submission
   const [isRcaFormOpen, setIsRcaFormOpen] = useState(false);
+  const { toast } = useToast();
 
   const addMessage = useCallback((text: string | React.ReactNode, sender: Message['sender']) => {
     setMessages((prevMessages) => [
@@ -35,7 +37,6 @@ export default function ChatPage() {
   }, []);
 
   useEffect(() => {
-    // Only add welcome message if no messages exist to prevent re-adding on RCA form close
     if (messages.length === 0) {
       addMessage(
         "Welcome to the M-pesa Incident Analysis assistant! I can help you analyze IT incidents. How can I assist you today?",
@@ -109,19 +110,39 @@ export default function ChatPage() {
     setIsRcaFormOpen(true);
   };
 
-  const handleRcaFormSubmit = (data: RcaFormData) => {
-    console.log("RCA Form Submitted:", data);
-    setIsRcaFormOpen(false);
-    // Reset chat and add a message about the new RCA context
-    setMessages([]);
-    addMessage(
-      `New RCA started for ticket: ${data.incidentTicketNumber}. Details logged. You can now ask questions related to this incident or provide further information.`,
-      'system'
-    );
-    // Here you could potentially send some of this data to the AI 
-    // or use it to prime the conversation.
-    // For example:
-    // handleSendMessage(`Analyze incident ${data.incidentTicketNumber}: ${data.description}`);
+  const handleRcaFormSubmit = async (data: RcaFormData) => {
+    setIsLoading(true);
+    try {
+      const result = await submitRcaData(data);
+      if (result.success) {
+        toast({
+          title: "RCA Submitted Successfully",
+          description: result.message || `RCA for ticket ${result.ticketNumber || data.incidentTicketNumber} has been logged.`,
+        });
+        setIsRcaFormOpen(false);
+        // Reset chat and add a message about the new RCA context
+        setMessages([]);
+        addMessage(
+          `New RCA started for ticket: ${data.incidentTicketNumber}. Details logged. You can now ask questions related to this incident or provide further information.`,
+          'system'
+        );
+      } else {
+        toast({
+          title: "RCA Submission Failed",
+          description: result.message || "An unknown error occurred while submitting the RCA.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Error submitting RCA form:", error);
+      toast({
+        title: "RCA Submission Error",
+        description: error instanceof Error ? error.message : "An unexpected error occurred on the client.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
 
@@ -129,7 +150,7 @@ export default function ChatPage() {
     <div className="flex flex-col h-full bg-background text-foreground">
       <ChatHeader onNewRcaSubmission={handleNewRcaSubmission} />
       <main className="flex-grow flex flex-col overflow-hidden">
-        <ChatArea messages={messages} isLoading={isLoading} />
+        <ChatArea messages={messages} isLoading={isLoading && !isRcaFormOpen} /> {/* Show chat loading only if RCA form is not open */}
       </main>
       <ChatInput onSendMessage={handleSendMessage} isLoading={isLoading} />
 
@@ -141,10 +162,11 @@ export default function ChatPage() {
               Please fill out the details for the new Root Cause Analysis report. All fields are required unless marked optional.
             </DialogDescription>
           </DialogHeader>
-          <ScrollArea className="max-h-[70vh] pr-6"> {/* Added pr-6 for scrollbar spacing */}
+          <ScrollArea className="max-h-[70vh] pr-6">
             <RcaForm
               onSubmitRca={handleRcaFormSubmit}
               onCancel={() => setIsRcaFormOpen(false)}
+              isLoading={isLoading} // Pass loading state to the form
             />
           </ScrollArea>
         </DialogContent>

@@ -25,7 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { ScrollArea } from '../ui/scroll-area';
+// Removed ScrollArea import as it's handled by the parent Dialog in page.tsx
 
 const rcaFormSchema = z.object({
   incidentTicketNumber: z.string().min(1, { message: 'Incident Ticket Number is required.' }),
@@ -52,9 +52,10 @@ const rcaFormSchema = z.object({
 interface RcaFormProps {
   onSubmitRca: (data: RcaFormData) => void;
   onCancel: () => void;
+  isLoading?: boolean; // Added isLoading prop
 }
 
-export function RcaForm({ onSubmitRca, onCancel }: RcaFormProps) {
+export function RcaForm({ onSubmitRca, onCancel, isLoading = false }: RcaFormProps) {
   const form = useForm<RcaFormData>({
     resolver: zodResolver(rcaFormSchema),
     defaultValues: {
@@ -71,7 +72,8 @@ export function RcaForm({ onSubmitRca, onCancel }: RcaFormProps) {
       rootCauseFindings: '',
       correctiveActions: '',
       preventativeMeasures: '',
-      // Default severity and status can be set if needed e.g. severity: 'P4', status: 'Open'
+      severity: undefined, // Ensure no default for better placeholder experience
+      status: undefined,   // Ensure no default for better placeholder experience
     },
   });
 
@@ -89,7 +91,7 @@ export function RcaForm({ onSubmitRca, onCancel }: RcaFormProps) {
             <FormItem>
               <FormLabel>Incident Ticket Number</FormLabel>
               <FormControl>
-                <Input placeholder="e.g., INC1234567" {...field} />
+                <Input placeholder="e.g., INC1234567" {...field} disabled={isLoading} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -104,7 +106,7 @@ export function RcaForm({ onSubmitRca, onCancel }: RcaFormProps) {
               <FormItem>
                 <FormLabel>Time and Date Detected</FormLabel>
                 <FormControl>
-                  <Input type="datetime-local" {...field} />
+                  <Input type="datetime-local" {...field} disabled={isLoading} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -117,7 +119,7 @@ export function RcaForm({ onSubmitRca, onCancel }: RcaFormProps) {
               <FormItem>
                 <FormLabel>Time and Date Recorded</FormLabel>
                 <FormControl>
-                  <Input type="datetime-local" {...field} />
+                  <Input type="datetime-local" {...field} disabled={isLoading} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -130,7 +132,7 @@ export function RcaForm({ onSubmitRca, onCancel }: RcaFormProps) {
               <FormItem>
                 <FormLabel>Time and Date Restored</FormLabel>
                 <FormControl>
-                  <Input type="datetime-local" {...field} />
+                  <Input type="datetime-local" {...field} disabled={isLoading} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -145,7 +147,7 @@ export function RcaForm({ onSubmitRca, onCancel }: RcaFormProps) {
             <FormItem>
               <FormLabel>Affected Configuration Item</FormLabel>
               <FormControl>
-                <Input placeholder="e.g., Server_XYZ, App_ABC" {...field} />
+                <Input placeholder="e.g., Server_XYZ, App_ABC" {...field} disabled={isLoading} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -159,7 +161,7 @@ export function RcaForm({ onSubmitRca, onCancel }: RcaFormProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Severity</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoading}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select severity" />
@@ -183,7 +185,7 @@ export function RcaForm({ onSubmitRca, onCancel }: RcaFormProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Status</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoading}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select status" />
@@ -210,7 +212,7 @@ export function RcaForm({ onSubmitRca, onCancel }: RcaFormProps) {
             <FormItem>
               <FormLabel>Incident Owner</FormLabel>
               <FormControl>
-                <Input placeholder="e.g., John Doe" {...field} />
+                <Input placeholder="e.g., John Doe" {...field} disabled={isLoading} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -224,7 +226,7 @@ export function RcaForm({ onSubmitRca, onCancel }: RcaFormProps) {
             <FormItem>
               <FormLabel>If the incident was not detected by monitoring, why not? (Optional)</FormLabel>
               <FormControl>
-                <Textarea placeholder="Provide reasons if applicable" {...field} />
+                <Textarea placeholder="Provide reasons if applicable" {...field} disabled={isLoading} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -238,7 +240,7 @@ export function RcaForm({ onSubmitRca, onCancel }: RcaFormProps) {
             <FormItem>
               <FormLabel>Description (Details, including stats/KPI)</FormLabel>
               <FormControl>
-                <Textarea placeholder="Detailed description of the incident..." {...field} rows={4} />
+                <Textarea placeholder="Detailed description of the incident..." {...field} rows={4} disabled={isLoading} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -252,7 +254,7 @@ export function RcaForm({ onSubmitRca, onCancel }: RcaFormProps) {
             <FormItem>
               <FormLabel>System Impact (Which systems/application/infrastructure items are affected?)</FormLabel>
               <FormControl>
-                <Textarea placeholder="Describe the system impact..." {...field} rows={3} />
+                <Textarea placeholder="Describe the system impact..." {...field} rows={3} disabled={isLoading} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -266,7 +268,7 @@ export function RcaForm({ onSubmitRca, onCancel }: RcaFormProps) {
             <FormItem>
               <FormLabel>Business Impact</FormLabel>
               <FormControl>
-                <Textarea placeholder="Describe the business impact..." {...field} rows={3}/>
+                <Textarea placeholder="Describe the business impact..." {...field} rows={3} disabled={isLoading} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -280,7 +282,7 @@ export function RcaForm({ onSubmitRca, onCancel }: RcaFormProps) {
             <FormItem>
               <FormLabel>Root Cause Findings</FormLabel>
               <FormControl>
-                <Textarea placeholder="Describe the root cause findings..." {...field} rows={4}/>
+                <Textarea placeholder="Describe the root cause findings..." {...field} rows={4} disabled={isLoading} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -294,7 +296,7 @@ export function RcaForm({ onSubmitRca, onCancel }: RcaFormProps) {
             <FormItem>
               <FormLabel>Corrective Actions/Interim Solutions (How was the incident resolved? Workaround? Services restored?)</FormLabel>
               <FormControl>
-                <Textarea placeholder="Describe corrective actions and interim solutions..." {...field} rows={4}/>
+                <Textarea placeholder="Describe corrective actions and interim solutions..." {...field} rows={4} disabled={isLoading} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -308,7 +310,7 @@ export function RcaForm({ onSubmitRca, onCancel }: RcaFormProps) {
             <FormItem>
               <FormLabel>Long Term Preventative Measures/Permanent Solution</FormLabel>
               <FormControl>
-                <Textarea placeholder="Describe long term preventative measures..." {...field} rows={4}/>
+                <Textarea placeholder="Describe long term preventative measures..." {...field} rows={4} disabled={isLoading} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -316,10 +318,12 @@ export function RcaForm({ onSubmitRca, onCancel }: RcaFormProps) {
         />
 
         <div className="flex justify-end gap-2 pt-4">
-          <Button type="button" variant="outline" onClick={onCancel}>
+          <Button type="button" variant="outline" onClick={onCancel} disabled={isLoading}>
             Cancel
           </Button>
-          <Button type="submit">Submit RCA</Button>
+          <Button type="submit" disabled={isLoading}>
+            {isLoading ? 'Submitting...' : 'Submit RCA'}
+          </Button>
         </div>
       </form>
     </Form>
