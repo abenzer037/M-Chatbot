@@ -110,6 +110,15 @@ export default function ChatPage() {
     setIsRcaFormOpen(true);
   };
 
+  const handleAnalyticsClick = () => {
+    toast({
+      title: "Analytics",
+      description: "Analytics functionality is not yet implemented.",
+    });
+    // Placeholder for future analytics functionality
+    console.log("Analytics button clicked");
+  };
+
   const handleRcaFormSubmit = async (data: RcaFormData) => {
     setIsLoading(true);
     try {
@@ -148,7 +157,10 @@ export default function ChatPage() {
 
   return (
     <div className="flex flex-col h-full bg-background text-foreground">
-      <ChatHeader onNewRcaSubmission={handleNewRcaSubmission} />
+      <ChatHeader 
+        onNewRcaSubmission={handleNewRcaSubmission} 
+        onAnalyticsClick={handleAnalyticsClick} // Pass the new handler
+      />
       <main className="flex-grow flex flex-col overflow-hidden">
         <ChatArea messages={messages} isLoading={isLoading && !isRcaFormOpen} /> {/* Show chat loading only if RCA form is not open */}
       </main>
