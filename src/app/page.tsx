@@ -2,16 +2,25 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import type { Message, ApiChatbotResponse } from '@/types';
+import type { Message, ApiChatbotResponse, RcaFormData } from '@/types';
 import { ChatHeader } from '@/components/chat/ChatHeader';
 import { ChatArea } from '@/components/chat/ChatArea';
 import { ChatInput } from '@/components/chat/ChatInput';
 import { getAIResponse } from './actions';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { RcaForm } from '@/components/rca/RcaForm';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isRcaFormOpen, setIsRcaFormOpen] = useState(false);
 
   const addMessage = useCallback((text: string | React.ReactNode, sender: Message['sender']) => {
     setMessages((prevMessages) => [
@@ -26,11 +35,14 @@ export default function ChatPage() {
   }, []);
 
   useEffect(() => {
-    addMessage(
-      "Welcome to the M-pesa Incident Analysis assistant! I can help you analyze IT incidents. How can I assist you today?",
-      'system'
-    );
-  }, [addMessage]);
+    // Only add welcome message if no messages exist to prevent re-adding on RCA form close
+    if (messages.length === 0) {
+      addMessage(
+        "Welcome to the M-pesa Incident Analysis assistant! I can help you analyze IT incidents. How can I assist you today?",
+        'system'
+      );
+    }
+  }, [addMessage, messages.length]);
 
   const handleSendMessage = async (messageText: string) => {
     addMessage(messageText, 'user');
@@ -82,7 +94,7 @@ export default function ChatPage() {
       console.error('Error processing message:', error);
       let errorMessage = "Sorry, I encountered an error while processing your request. Please try again later.";
       if (error instanceof Error) {
-        errorMessage = error.message; // Show more specific error from action
+        errorMessage = error.message; 
       }
       addMessage(
         errorMessage,
@@ -94,14 +106,24 @@ export default function ChatPage() {
   };
 
   const handleNewRcaSubmission = () => {
+    setIsRcaFormOpen(true);
+  };
+
+  const handleRcaFormSubmit = (data: RcaFormData) => {
+    console.log("RCA Form Submitted:", data);
+    setIsRcaFormOpen(false);
+    // Reset chat and add a message about the new RCA context
     setMessages([]);
-     addMessage(
-      "Welcome to the M-pesa Incident Analysis assistant! I can help you analyze IT incidents. How can I assist you today?",
+    addMessage(
+      `New RCA started for ticket: ${data.incidentTicketNumber}. Details logged. You can now ask questions related to this incident or provide further information.`,
       'system'
     );
-    addMessage("New RCA submission process would start here. Chat has been reset.", "system");
-    console.log("New RCA Submission button clicked");
+    // Here you could potentially send some of this data to the AI 
+    // or use it to prime the conversation.
+    // For example:
+    // handleSendMessage(`Analyze incident ${data.incidentTicketNumber}: ${data.description}`);
   };
+
 
   return (
     <div className="flex flex-col h-full bg-background text-foreground">
@@ -110,6 +132,23 @@ export default function ChatPage() {
         <ChatArea messages={messages} isLoading={isLoading} />
       </main>
       <ChatInput onSendMessage={handleSendMessage} isLoading={isLoading} />
+
+      <Dialog open={isRcaFormOpen} onOpenChange={setIsRcaFormOpen}>
+        <DialogContent className="max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-4xl">
+          <DialogHeader>
+            <DialogTitle>New RCA Submission</DialogTitle>
+            <DialogDescription>
+              Please fill out the details for the new Root Cause Analysis report. All fields are required unless marked optional.
+            </DialogDescription>
+          </DialogHeader>
+          <ScrollArea className="max-h-[70vh] pr-6"> {/* Added pr-6 for scrollbar spacing */}
+            <RcaForm
+              onSubmitRca={handleRcaFormSubmit}
+              onCancel={() => setIsRcaFormOpen(false)}
+            />
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
