@@ -1,9 +1,11 @@
+
 import { Button } from "@/components/ui/button";
 import { PlusCircle, BarChart3 } from "lucide-react";
+import Image from "next/image"; // Import the Image component
 
 interface ChatHeaderProps {
   onNewRcaSubmission: () => void;
-  onAnalyticsClick: () => void; // New prop for analytics button
+  onAnalyticsClick: () => void;
 }
 
 export function ChatHeader({ onNewRcaSubmission, onAnalyticsClick }: ChatHeaderProps) {
@@ -11,21 +13,15 @@ export function ChatHeader({ onNewRcaSubmission, onAnalyticsClick }: ChatHeaderP
     <header className="bg-card border-b border-border p-4 shadow-sm">
       <div className="container mx-auto flex items-center justify-between">
         <div className="flex items-center gap-3">
-          {/* Placeholder SVG Logo */}
-          <svg
-            width="32"
-            height="32"
-            viewBox="0 0 100 100"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className="text-primary"
-            data-ai-hint="logo mpesa"
-          >
-            <circle cx="50" cy="50" r="45" stroke="currentColor" strokeWidth="10" />
-            <text x="50%" y="50%" dominantBaseline="middle" textAnchor="middle" fontSize="40" fill="currentColor" fontWeight="bold">
-              M
-            </text>
-          </svg>
+          {/* Replace this with your actual logo using next/image */}
+          <Image
+            src="/images/logo.png" // IMPORTANT: Update this path if your logo is named differently or in another folder within 'public'
+            alt="M-pesa Incident Analyzer Logo" // IMPORTANT: Provide a descriptive alt text
+            width={100} // IMPORTANT: Set the desired display width of your logo
+            height={32} // IMPORTANT: Set the desired display height of your logo
+            className="h-auto" // Optional: maintain aspect ratio if width/height props define a different one
+            priority // Optional: if your logo is critical for LCP, consider adding priority
+          />
           <h1 className="text-xl font-semibold text-primary">M-pesa Incident Analyzer</h1>
         </div>
         <div className="flex items-center gap-2">
