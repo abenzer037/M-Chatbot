@@ -18,10 +18,10 @@ export function ChatHeader({ onNewRcaSubmission, onAnalyticsClick }: ChatHeaderP
             For example: public/images/logo.png
           */}
           <Image
-            src="/images/logo.png" // Corrected path for an image at public/images/logo.png
+            src="/images/logo.png" // Path relative to the 'public' directory
             alt="M-pesa Incident Analyzer Logo"
-            width={40} // Desired display width
-            height={40} // Desired display height (assuming square logo, adjust if not)
+            width={50} // Increased width
+            height={50} // Increased height
             priority 
           />
           <h1 className="text-xl font-semibold text-primary">M-pesa Incident Analyzer</h1>
