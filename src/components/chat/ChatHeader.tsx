@@ -25,7 +25,7 @@ export function ChatHeader({ onNewRcaSubmission, onAnalyticsClick }: ChatHeaderP
             className="h-auto"
             priority 
           />
-          <h1 className="text-xl font-semibold text-primary">M-pesa Incident Analyzer</h1>
+          <h1 className="text-xl font-semibold text-primary">M-pesa Incident RCA Analyzer</h1>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="default" onClick={onAnalyticsClick}>
