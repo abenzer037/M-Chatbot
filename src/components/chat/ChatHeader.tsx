@@ -13,14 +13,19 @@ export function ChatHeader({ onNewRcaSubmission, onAnalyticsClick }: ChatHeaderP
     <header className="bg-card border-b border-border p-4 shadow-sm">
       <div className="container mx-auto flex items-center justify-between">
         <div className="flex items-center gap-3">
-          {/* Replace this with your actual logo using next/image */}
+          {/* 
+            IMPORTANT: Ensure your logo file (e.g., logo.png) is moved 
+            from 'src/images/' to 'public/images/'.
+            The 'src' prop below assumes the logo is at 'public/images/logo.png'.
+            Adjust width and height for desired display size.
+          */}
           <Image
-            src="/images/logo.png" // IMPORTANT: Update this path if your logo is named differently or in another folder within 'public'
-            alt="M-pesa Incident Analyzer Logo" // IMPORTANT: Provide a descriptive alt text
-            width={100} // IMPORTANT: Set the desired display width of your logo
-            height={32} // IMPORTANT: Set the desired display height of your logo
-            className="h-auto" // Optional: maintain aspect ratio if width/height props define a different one
-            priority // Optional: if your logo is critical for LCP, consider adding priority
+            src="/images/logo.png" 
+            alt="M-pesa Incident Analyzer Logo"
+            width={40} // Adjusted for a typical header logo size
+            height={40} // Adjusted for a typical header logo size (assuming square logo)
+            className="h-auto max-h-[40px]" // Ensure height consistency and maintain aspect ratio via h-auto
+            priority 
           />
           <h1 className="text-xl font-semibold text-primary">M-pesa Incident Analyzer</h1>
         </div>
