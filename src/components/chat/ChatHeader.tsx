@@ -20,8 +20,8 @@ export function ChatHeader({ onNewRcaSubmission, onAnalyticsClick }: ChatHeaderP
           <Image
             src="/images/logo.png" // Path relative to the 'public' directory
             alt="M-pesa Incident Analyzer Logo"
-            width={50} // Increased width
-            height={50} // Increased height
+            width={70} // Increased width
+            height={60} // Increased height
             priority 
           />
           <h1 className="text-xl font-semibold text-primary">M-pesa Incident Analyzer</h1>
