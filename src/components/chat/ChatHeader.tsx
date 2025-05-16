@@ -20,7 +20,7 @@ export function ChatHeader({ onNewRcaSubmission, onAnalyticsClick }: ChatHeaderP
             Adjust width and height for desired display size.
           */}
           <Image
-            src="/images/logo.png" 
+            src="/src/logo.png" 
             alt="M-pesa Incident Analyzer Logo"
             width={40} // Adjusted for a typical header logo size
             height={40} // Adjusted for a typical header logo size (assuming square logo)
