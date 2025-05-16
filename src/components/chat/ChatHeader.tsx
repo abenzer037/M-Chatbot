@@ -14,17 +14,14 @@ export function ChatHeader({ onNewRcaSubmission, onAnalyticsClick }: ChatHeaderP
       <div className="container mx-auto flex items-center justify-between">
         <div className="flex items-center gap-3">
           {/* 
-            IMPORTANT: Ensure your logo file (e.g., logo.png) is moved 
-            from 'src/images/' to 'public/images/'.
-            The 'src' prop below assumes the logo is at 'public/images/logo.png'.
-            Adjust width and height for desired display size.
+            Logo image should be in the 'public/images/' directory.
+            For example: public/images/logo.png
           */}
           <Image
-            src="/src/logo.png" 
+            src="/images/logo.png" // Corrected path for an image at public/images/logo.png
             alt="M-pesa Incident Analyzer Logo"
-            width={40} // Adjusted for a typical header logo size
-            height={40} // Adjusted for a typical header logo size (assuming square logo)
-            className="h-auto max-h-[40px]" // Ensure height consistency and maintain aspect ratio via h-auto
+            width={40} // Desired display width
+            height={40} // Desired display height (assuming square logo, adjust if not)
             priority 
           />
           <h1 className="text-xl font-semibold text-primary">M-pesa Incident Analyzer</h1>
