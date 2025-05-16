@@ -22,6 +22,7 @@ export function ChatHeader({ onNewRcaSubmission, onAnalyticsClick }: ChatHeaderP
             alt="M-pesa Incident Analyzer Logo"
             width={70} // Increased width
             height={60} // Increased height
+            className="h-auto"
             priority 
           />
           <h1 className="text-xl font-semibold text-primary">M-pesa Incident Analyzer</h1>
