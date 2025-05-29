@@ -45,14 +45,14 @@ export function ChatMessage({ message }: ChatMessageProps) {
           isUser ? "bg-secondary text-secondary-foreground rounded-br-none" : "",
           isBot ? "bg-card text-card-foreground rounded-bl-none" : "",
           isSystem ? "bg-primary text-primary-foreground border-primary rounded-bl-none w-full max-w-xl" : "", // System message uses primary color
-          isError ? "bg-destructive/10 border-destructive rounded-bl-none" : "" // Removed text-destructive-foreground, text color will be handled by content div
+          isError ? "bg-destructive/10 border-destructive text-destructive-foreground rounded-bl-none" : "" // Added text-destructive-foreground back
         )}
       >
         <CardContent className="p-3">
           <div className={cn(
             "text-sm whitespace-pre-wrap",
-            isSystem && "font-medium text-lg",
-            isError && "text-foreground" // Added this line to make error message text dark
+            isSystem && "font-medium text-lg"
+            // Removed: isError && "text-foreground"
             )}>
             {message.text}
           </div>
