@@ -1,3 +1,4 @@
+
 import type { Message } from "@/types";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -30,10 +31,10 @@ export function ChatMessage({ message }: ChatMessageProps) {
       {!isUser && (
         <div className={cn(
           "flex-shrink-0 p-2 rounded-full",
-          isBot ? "bg-primary text-primary-foreground" : 
-          isSystem ? "bg-primary text-primary-foreground" : // Changed from bg-accent to bg-primary
+          isBot ? "bg-primary text-primary-foreground" :
+          isSystem ? "bg-primary text-primary-foreground" :
           isError ? "bg-destructive text-destructive-foreground" :
-          "bg-secondary text-secondary-foreground"
+          "bg-secondary text-secondary-foreground" // Default fallback, though not typically hit with current senders
         )}>
           <Icon size={18} />
         </div>
@@ -41,9 +42,9 @@ export function ChatMessage({ message }: ChatMessageProps) {
       <Card
         className={cn(
           "max-w-xs md:max-w-md lg:max-w-lg xl:max-w-xl p-0 shadow-md",
-          isUser ? "bg-accent text-accent-foreground rounded-br-none" : "",
+          isUser ? "bg-secondary text-secondary-foreground rounded-br-none" : "",
           isBot ? "bg-card text-card-foreground rounded-bl-none" : "",
-          isSystem ? "bg-secondary text-secondary-foreground border-primary rounded-bl-none w-full max-w-xl" : "",
+          isSystem ? "bg-primary text-primary-foreground border-primary rounded-bl-none w-full max-w-xl" : "", // System message uses primary color
           isError ? "bg-destructive/10 text-destructive-foreground border-destructive rounded-bl-none" : ""
         )}
       >
@@ -54,8 +55,8 @@ export function ChatMessage({ message }: ChatMessageProps) {
           <div
             className={cn(
               "text-xs mt-1",
-              isUser ? "text-right text-accent-foreground/70" : "text-left text-muted-foreground",
-              isSystem ? "text-right text-secondary-foreground/70" : ""
+              isUser ? "text-right text-secondary-foreground/70" : "text-left text-muted-foreground",
+              isSystem ? "text-right text-primary-foreground/70" : ""
             )}
           >
             {timeString}
@@ -63,7 +64,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
         </CardContent>
       </Card>
       {isUser && (
-         <div className="flex-shrink-0 bg-accent text-accent-foreground p-2 rounded-full">
+         <div className="flex-shrink-0 bg-secondary text-secondary-foreground p-2 rounded-full">
           <Icon size={18} />
         </div>
       )}
