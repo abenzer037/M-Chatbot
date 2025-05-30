@@ -4,14 +4,19 @@
 import type { ApiChatRequest, ApiChatbotResponse, RcaFormData, RcaSubmissionResponse } from '@/types';
 
 export async function getAIResponse(userInput: string): Promise<ApiChatbotResponse> {
-  const apiUrl = process.env.NEXT_PUBLIC_CHATBOT_API_URL;
+  const apiUrlFromEnv = process.env.NEXT_PUBLIC_CHATBOT_API_URL;
 
-  if (!apiUrl) {
+  if (!apiUrlFromEnv) {
     console.error('Error: NEXT_PUBLIC_CHATBOT_API_URL is not set.');
     throw new Error('Chatbot API URL is not configured. Please contact support.');
   }
 
-  const fullApiUrl = `${apiUrl.replace(/\/$/, '')}/chat/`; // Ensure no double slashes
+  // Ensure the base URL from .env doesn't have a trailing slash, then append the specific endpoint path
+  const baseApiUrl = apiUrlFromEnv.replace(/\/$/, '');
+  const endpointPath = '/chat'; // Matching @app.post("/chat") in the Python backend
+  const fullApiUrl = `${baseApiUrl}${endpointPath}`;
+
+  console.log(`Attempting to call AI API at: ${fullApiUrl}`); // Log the URL being called
 
   const requestBody: ApiChatRequest = {
     query: userInput,
@@ -28,18 +33,23 @@ export async function getAIResponse(userInput: string): Promise<ApiChatbotRespon
 
     if (!response.ok) {
       const errorBody = await response.text();
-      console.error(`API Error (${response.status}): ${errorBody}`);
-      throw new Error(`Failed to get AI response from the external API. Status: ${response.status}`);
+      console.error(`API Error from ${fullApiUrl} (${response.status}): ${errorBody}`);
+      throw new Error(`Failed to get AI response from the external API. Status: ${response.status}, URL: ${fullApiUrl}`);
     }
 
     const data: ApiChatbotResponse = await response.json();
     return data;
-  } catch (error) {
-    console.error('Error calling external AI API:', error);
-    if (error instanceof Error && error.message.startsWith('Failed to get AI response')) {
-      throw error;
+  } catch (error: any) {
+    console.error(`Error calling external AI API at ${fullApiUrl}:`, error);
+    // Provide more specific error information if available
+    let errorMessage = `Failed to connect to the AI service at ${fullApiUrl}. Please try again later.`;
+    if (error.message) {
+      errorMessage += ` Details: ${error.message}`;
     }
-    throw new Error('Failed to connect to the AI service. Please try again later.');
+    if (error.cause) { // Node.js specific for fetch errors, might show more details like ECONNREFUSED
+        errorMessage += ` Cause: ${JSON.stringify(error.cause)}`;
+    }
+    throw new Error(errorMessage);
   }
 }
 
