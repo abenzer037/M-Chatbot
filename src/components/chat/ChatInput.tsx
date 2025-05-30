@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, type FormEvent } from "react";
@@ -42,7 +43,7 @@ export function ChatInput({ onSendMessage, isLoading }: ChatInputProps) {
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Ask about an incident.."
-          className="flex-grow resize-none_ focus:ring-1 focus:ring-primary/50"
+          className="flex-grow resize-none focus:ring-1 focus:ring-primary/50"
           rows={1}
           disabled={isLoading}
           aria-label="Chat input"
