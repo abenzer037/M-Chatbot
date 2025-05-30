@@ -41,11 +41,11 @@ export function ChatMessage({ message }: ChatMessageProps) {
       )}
       <Card
         className={cn(
-          "max-w-sm md:max-w-lg lg:max-w-xl xl:max-w-2xl p-0 shadow-md", // Increased max-width
+          "max-w-lg md:max-w-2xl lg:max-w-3xl xl:max-w-4xl p-0 shadow-md", // Increased max-width
           isUser ? "bg-secondary text-secondary-foreground rounded-br-none" : "",
           isBot ? "bg-card text-card-foreground rounded-bl-none" : "",
-          isSystem ? "bg-primary text-primary-foreground border-primary rounded-bl-none w-full max-w-2xl" : "", // System message uses primary color, increased max-width
-          isError ? "bg-destructive/10 border-destructive text-destructive-foreground rounded-bl-none" : "" 
+          isSystem ? "bg-primary text-primary-foreground border-primary rounded-bl-none w-full max-w-4xl" : "", // System message uses primary color, increased max-width
+          isError ? "bg-destructive/10 border-destructive text-foreground rounded-bl-none" : "" 
         )}
       >
         <CardContent className="p-3">
