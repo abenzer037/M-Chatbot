@@ -51,45 +51,8 @@ export default function ChatPage() {
 
     try {
       const apiResponse: ApiChatbotResponse = await getAIResponse(messageText);
-      
-      const botMessageContent = (
-        <div className="space-y-2">
-          <p>{apiResponse.full_response}</p>
-          {apiResponse.summary && (
-            <div>
-              <p className="font-semibold">Summary:</p>
-              <p>{apiResponse.summary}</p>
-            </div>
-          )}
-          {apiResponse.recommendation && (
-             <div>
-              <p className="font-semibold">Recommendation:</p>
-              <p>{apiResponse.recommendation}</p>
-            </div>
-          )}
-          {apiResponse.source_incidents && apiResponse.source_incidents.length > 0 && (
-            <div>
-              <p className="font-semibold mt-2">Source Incidents:</p>
-              <ul className="list-disc list-inside space-y-1 text-xs">
-                {apiResponse.source_incidents.map((incident, index) => (
-                  <li key={index}>
-                    <p className="font-medium">Content: <span className="font-normal">{incident.Content}</span></p>
-                    {incident.Metadata && Object.keys(incident.Metadata).length > 0 && (
-                       <details className="mt-1">
-                         <summary className="cursor-pointer text-muted-foreground hover:text-foreground">Metadata</summary>
-                         <pre className="bg-muted/50 p-2 rounded-md text-muted-foreground text-[0.7rem] whitespace-pre-wrap break-all">
-                           {JSON.stringify(incident.Metadata, null, 2)}
-                         </pre>
-                       </details>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-      );
-      addMessage(botMessageContent, 'bot');
+      // Directly use the 'response' field from the API
+      addMessage(apiResponse.response, 'bot');
 
     } catch (error) {
       console.error('Error processing message:', error);

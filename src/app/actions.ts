@@ -34,6 +34,13 @@ export async function getAIResponse(userInput: string): Promise<ApiChatbotRespon
     if (!response.ok) {
       const errorBody = await response.text();
       console.error(`API Error from ${fullApiUrl} (${response.status}): ${errorBody}`);
+      // Log the full response object in case of non-ok status for more details
+      try {
+        const errorJson = JSON.parse(errorBody);
+        console.error('API Error JSON response:', errorJson);
+      } catch (e) {
+        // If errorBody is not JSON, it's already logged as text
+      }
       throw new Error(`Failed to get AI response from the external API. Status: ${response.status}, URL: ${fullApiUrl}`);
     }
 
@@ -41,13 +48,21 @@ export async function getAIResponse(userInput: string): Promise<ApiChatbotRespon
     return data;
   } catch (error: any) {
     console.error(`Error calling external AI API at ${fullApiUrl}:`, error);
-    // Provide more specific error information if available
     let errorMessage = `Failed to connect to the AI service at ${fullApiUrl}. Please try again later.`;
     if (error.message) {
       errorMessage += ` Details: ${error.message}`;
     }
-    if (error.cause) { // Node.js specific for fetch errors, might show more details like ECONNREFUSED
-        errorMessage += ` Cause: ${JSON.stringify(error.cause)}`;
+    if (error.cause) { 
+        // Check if error.cause is an object before stringifying
+        if (typeof error.cause === 'object' && error.cause !== null) {
+            try {
+                errorMessage += ` Cause: ${JSON.stringify(error.cause)}`;
+            } catch (e) {
+                errorMessage += ` Cause: (Unserializable cause object)`;
+            }
+        } else {
+            errorMessage += ` Cause: ${error.cause}`;
+        }
     }
     throw new Error(errorMessage);
   }
