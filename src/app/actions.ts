@@ -4,7 +4,7 @@
 import type { ApiChatRequest, ApiChatbotResponse, RcaFormData, RcaSubmissionResponse } from '@/types';
 
 // Hardcoded API URL
-const CHATBOT_API_URL = "https://incident-bot-1.onrender.com/chat";
+const CHATBOT_API_URL = "https://ops-bot.onrender.com/chat"; // Updated URL
 
 export async function getAIResponse(userInput: string): Promise<ApiChatbotResponse> {
   console.log(`Attempting to call AI API at: ${CHATBOT_API_URL}`);
