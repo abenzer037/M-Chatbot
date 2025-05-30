@@ -41,10 +41,10 @@ export function ChatMessage({ message }: ChatMessageProps) {
       )}
       <Card
         className={cn(
-          "max-w-xs md:max-w-md lg:max-w-lg xl:max-w-xl p-0 shadow-md",
+          "max-w-sm md:max-w-lg lg:max-w-xl xl:max-w-2xl p-0 shadow-md", // Increased max-width
           isUser ? "bg-secondary text-secondary-foreground rounded-br-none" : "",
           isBot ? "bg-card text-card-foreground rounded-bl-none" : "",
-          isSystem ? "bg-primary text-primary-foreground border-primary rounded-bl-none w-full max-w-xl" : "", // System message uses primary color
+          isSystem ? "bg-primary text-primary-foreground border-primary rounded-bl-none w-full max-w-2xl" : "", // System message uses primary color, increased max-width
           isError ? "bg-destructive/10 border-destructive text-destructive-foreground rounded-bl-none" : "" 
         )}
       >
@@ -52,7 +52,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
           <div className={cn(
             "text-sm whitespace-pre-wrap",
             isSystem && "font-medium text-lg",
-            isError && "text-foreground" // Added to make error text use main foreground color
+            isError && "text-foreground" 
             )}>
             {message.text}
           </div>
