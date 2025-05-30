@@ -11,9 +11,23 @@ export interface ApiChatRequest {
   query: string;
 }
 
-// Updated to match the new backend response structure
+// Metadata for source incidents
+export interface ApiMetadata {
+  [key: string]: any; // Allow any other metadata fields
+}
+
+// Structure for a single source incident
+export interface ApiSourceIncident {
+  Content: string;
+  Metadata: ApiMetadata;
+}
+
+// Updated to match the new backend response structure with summary, recommendation, etc.
 export interface ApiChatbotResponse {
-  response: string;
+  summary: string;
+  recommendation: string;
+  full_response: string;
+  source_incidents: ApiSourceIncident[];
 }
 
 // Type for RCA Form Data

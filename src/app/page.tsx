@@ -1,8 +1,8 @@
 
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import type { Message, ApiChatbotResponse, RcaFormData } from '@/types';
+import React, { useState, useEffect, useCallback } from 'react';
+import type { Message, ApiChatbotResponse, RcaFormData, ApiSourceIncident } from '@/types';
 import { ChatHeader } from '@/components/chat/ChatHeader';
 import { ChatArea } from '@/components/chat/ChatArea';
 import { ChatInput } from '@/components/chat/ChatInput';
@@ -20,7 +20,7 @@ import { useToast } from '@/hooks/use-toast';
 
 export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([]);
-  const [isLoading, setIsLoading] = useState(false); // Used for chat input and RCA form submission
+  const [isLoading, setIsLoading] = useState(false);
   const [isRcaFormOpen, setIsRcaFormOpen] = useState(false);
   const { toast } = useToast();
 
@@ -28,7 +28,7 @@ export default function ChatPage() {
     setMessages((prevMessages) => [
       ...prevMessages,
       {
-        id: Date.now().toString() + Math.random().toString(), // Basic unique ID
+        id: Date.now().toString() + Math.random().toString(),
         text,
         sender,
         timestamp: new Date(),
@@ -51,8 +51,50 @@ export default function ChatPage() {
 
     try {
       const apiResponse: ApiChatbotResponse = await getAIResponse(messageText);
-      // Directly use the 'response' field from the API
-      addMessage(apiResponse.response, 'bot');
+      
+      const botResponseContent = (
+        <div className="space-y-3">
+          {apiResponse.full_response && <p>{apiResponse.full_response}</p>}
+          
+          {apiResponse.summary && (
+            <div>
+              <h3 className="font-semibold text-base mb-1">Summary:</h3>
+              <p className="text-sm">{apiResponse.summary}</p>
+            </div>
+          )}
+
+          {apiResponse.recommendation && (
+            <div>
+              <h3 className="font-semibold text-base mb-1">Recommendation:</h3>
+              <p className="text-sm">{apiResponse.recommendation}</p>
+            </div>
+          )}
+
+          {apiResponse.source_incidents && apiResponse.source_incidents.length > 0 && (
+            <div>
+              <h3 className="font-semibold text-base mb-1">Source Incidents:</h3>
+              <ul className="list-disc list-inside space-y-2 text-sm">
+                {apiResponse.source_incidents.map((incident: ApiSourceIncident, index: number) => (
+                  <li key={index} className="bg-muted/50 p-2 rounded-md">
+                    <p className="font-medium">Content:</p>
+                    <p className="whitespace-pre-wrap">{incident.Content}</p>
+                    {incident.Metadata && Object.keys(incident.Metadata).length > 0 && (
+                       <details className="mt-1 text-xs">
+                        <summary className="cursor-pointer text-muted-foreground hover:text-foreground">Metadata</summary>
+                        <pre className="mt-1 p-2 bg-secondary/50 rounded text-xs overflow-x-auto">
+                          {JSON.stringify(incident.Metadata, null, 2)}
+                        </pre>
+                      </details>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      );
+
+      addMessage(botResponseContent, 'bot');
 
     } catch (error) {
       console.error('Error processing message:', error);
@@ -78,7 +120,6 @@ export default function ChatPage() {
       title: "Analytics",
       description: "Analytics functionality is not yet implemented.",
     });
-    // Placeholder for future analytics functionality
     console.log("Analytics button clicked");
   };
 
@@ -92,7 +133,6 @@ export default function ChatPage() {
           description: result.message || `RCA for ticket ${result.ticketNumber || data.incidentTicketNumber} has been logged.`,
         });
         setIsRcaFormOpen(false);
-        // Reset chat and add a message about the new RCA context
         setMessages([]);
         addMessage(
           `New RCA started for ticket: ${data.incidentTicketNumber}. Details logged. You can now ask questions related to this incident or provide further information.`,
@@ -122,10 +162,10 @@ export default function ChatPage() {
     <div className="flex flex-col h-full bg-background text-foreground">
       <ChatHeader 
         onNewRcaSubmission={handleNewRcaSubmission} 
-        onAnalyticsClick={handleAnalyticsClick} // Pass the new handler
+        onAnalyticsClick={handleAnalyticsClick}
       />
       <main className="flex-grow flex flex-col overflow-hidden">
-        <ChatArea messages={messages} isLoading={isLoading && !isRcaFormOpen} /> {/* Show chat loading only if RCA form is not open */}
+        <ChatArea messages={messages} isLoading={isLoading && !isRcaFormOpen} />
       </main>
       <ChatInput onSendMessage={handleSendMessage} isLoading={isLoading} />
 
@@ -141,7 +181,7 @@ export default function ChatPage() {
             <RcaForm
               onSubmitRca={handleRcaFormSubmit}
               onCancel={() => setIsRcaFormOpen(false)}
-              isLoading={isLoading} // Pass loading state to the form
+              isLoading={isLoading}
             />
           </ScrollArea>
         </DialogContent>

@@ -45,14 +45,14 @@ export function ChatMessage({ message }: ChatMessageProps) {
           isUser ? "bg-secondary text-secondary-foreground rounded-br-none" : "",
           isBot ? "bg-card text-card-foreground rounded-bl-none" : "",
           isSystem ? "bg-primary text-primary-foreground border-primary rounded-bl-none w-full max-w-xl" : "", // System message uses primary color
-          isError ? "bg-destructive/10 border-destructive text-destructive-foreground rounded-bl-none" : "" // Added text-destructive-foreground back
+          isError ? "bg-destructive/10 border-destructive text-destructive-foreground rounded-bl-none" : "" 
         )}
       >
         <CardContent className="p-3">
           <div className={cn(
             "text-sm whitespace-pre-wrap",
-            isSystem && "font-medium text-lg"
-            // Removed: isError && "text-foreground"
+            isSystem && "font-medium text-lg",
+            isError && "text-foreground" // Added to make error text use main foreground color
             )}>
             {message.text}
           </div>
@@ -61,7 +61,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
               "text-xs mt-1",
               isUser ? "text-right text-secondary-foreground/70" : "text-left text-muted-foreground",
               isSystem ? "text-right text-primary-foreground/70" : "",
-              isError ? "text-left text-muted-foreground" : "" // Ensure timestamp color for error is consistent
+              isError ? "text-left text-muted-foreground" : ""
             )}
           >
             {timeString}

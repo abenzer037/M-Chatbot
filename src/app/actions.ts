@@ -3,27 +3,18 @@
 
 import type { ApiChatRequest, ApiChatbotResponse, RcaFormData, RcaSubmissionResponse } from '@/types';
 
+// Hardcoded API URL
+const CHATBOT_API_URL = "https://incident-bot-1.onrender.com/chat";
+
 export async function getAIResponse(userInput: string): Promise<ApiChatbotResponse> {
-  const apiUrlFromEnv = process.env.NEXT_PUBLIC_CHATBOT_API_URL;
-
-  if (!apiUrlFromEnv) {
-    console.error('Error: NEXT_PUBLIC_CHATBOT_API_URL is not set.');
-    throw new Error('Chatbot API URL is not configured. Please contact support.');
-  }
-
-  // Ensure the base URL from .env doesn't have a trailing slash, then append the specific endpoint path
-  const baseApiUrl = apiUrlFromEnv.replace(/\/$/, '');
-  const endpointPath = '/chat'; // Matching @app.post("/chat") in the Python backend
-  const fullApiUrl = `${baseApiUrl}${endpointPath}`;
-
-  console.log(`Attempting to call AI API at: ${fullApiUrl}`); // Log the URL being called
+  console.log(`Attempting to call AI API at: ${CHATBOT_API_URL}`);
 
   const requestBody: ApiChatRequest = {
     query: userInput,
   };
 
   try {
-    const response = await fetch(fullApiUrl, {
+    const response = await fetch(CHATBOT_API_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -33,27 +24,25 @@ export async function getAIResponse(userInput: string): Promise<ApiChatbotRespon
 
     if (!response.ok) {
       const errorBody = await response.text();
-      console.error(`API Error from ${fullApiUrl} (${response.status}): ${errorBody}`);
-      // Log the full response object in case of non-ok status for more details
+      console.error(`API Error from ${CHATBOT_API_URL} (${response.status}): ${errorBody}`);
+      let errorJson = {};
       try {
-        const errorJson = JSON.parse(errorBody);
-        console.error('API Error JSON response:', errorJson);
+        errorJson = JSON.parse(errorBody);
       } catch (e) {
         // If errorBody is not JSON, it's already logged as text
       }
-      throw new Error(`Failed to get AI response from the external API. Status: ${response.status}, URL: ${fullApiUrl}`);
+      throw new Error(`Failed to get AI response from the external API. Status: ${response.status}, URL: ${CHATBOT_API_URL}, Body: ${errorBody}`);
     }
 
     const data: ApiChatbotResponse = await response.json();
     return data;
   } catch (error: any) {
-    console.error(`Error calling external AI API at ${fullApiUrl}:`, error);
-    let errorMessage = `Failed to connect to the AI service at ${fullApiUrl}. Please try again later.`;
+    console.error(`Error calling external AI API at ${CHATBOT_API_URL}:`, error);
+    let errorMessage = `Failed to connect to the AI service at ${CHATBOT_API_URL}. Please try again later.`;
     if (error.message) {
       errorMessage += ` Details: ${error.message}`;
     }
-    if (error.cause) { 
-        // Check if error.cause is an object before stringifying
+    if (error.cause) {
         if (typeof error.cause === 'object' && error.cause !== null) {
             try {
                 errorMessage += ` Cause: ${JSON.stringify(error.cause)}`;
@@ -64,6 +53,8 @@ export async function getAIResponse(userInput: string): Promise<ApiChatbotRespon
             errorMessage += ` Cause: ${error.cause}`;
         }
     }
+    // Re-throw a new error with a structured message or just the message
+    // For the frontend to display, a simple message is often best.
     throw new Error(errorMessage);
   }
 }
