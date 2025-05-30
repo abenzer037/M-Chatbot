@@ -48,8 +48,15 @@ export function ChatInput({ onSendMessage, isLoading }: ChatInputProps) {
           disabled={isLoading}
           aria-label="Chat input"
         />
-        <Button type="submit" size="icon" disabled={isLoading || !inputValue.trim()} className="bg-primary hover:bg-primary/90">
-          <SendHorizonal className="h-5 w-5 text-primary-foreground" />
+        <Button
+          variant="default" // Ensures primary background and foreground for icon
+          type="submit"
+          size="icon"
+          disabled={isLoading || !inputValue.trim()}
+          className="hover:bg-primary" // Overrides default hover to stay solid primary green
+        >
+          {/* Icon color (text-primary-foreground) is inherited from variant="default" */}
+          <SendHorizonal className="h-5 w-5" />
           <span className="sr-only">Send message</span>
         </Button>
       </div>
