@@ -65,7 +65,7 @@ export async function submitRcaData(formData: RcaFormData): Promise<RcaSubmissio
   // TODO: Implement the actual API call to your backend here.
   // This is a placeholder for your API integration.
   // Example structure for an API call:
-  // const rcaApiUrl = "YOUR_RCA_SUBMISSION_API_URL_HERE"; // Hardcode or get from env
+  // const rcaApiUrl = process.env.RCA_SUBMISSION_API_URL; // You'll need to set this in your .env files
   // if (!rcaApiUrl) {
   //   console.error('Error: RCA_SUBMISSION_API_URL is not set.');
   //   return { success: false, message: 'RCA submission API URL is not configured.' };
@@ -101,4 +101,3 @@ export async function submitRcaData(formData: RcaFormData): Promise<RcaSubmissio
   // In a real scenario, you might get a specific ID or confirmation from the API.
   return { success: true, message: 'RCA data logged successfully (simulated).', ticketNumber: formData.incidentTicketNumber };
 }
-
